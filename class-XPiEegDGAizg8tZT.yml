@@ -1,0 +1,66 @@
+id: XPiEegDGAizg8tZT
+createdBy: zNbWY1QkV7AP
+dateCreated: 1750351126309
+name: Meine neue Klasse
+meta:
+  logo: ''
+  description: ''
+  selfAssign: true
+  defaultNumberOfRooms: '3'
+members:
+  teacher: []
+  student: []
+modules:
+  - url: https://edrys-labs.github.io/module-markdown-it/index.html
+    config:
+      content: '# Der Wachhund Timer'
+    studentConfig:
+      content: ''
+    teacherConfig:
+      content: ''
+    stationConfig:
+      content: ''
+    showInCustom: Lobby
+    width: full
+    height: tall
+  - url: https://edrys-labs.github.io/module-markdown-it/index.html
+    config:
+      content: >-
+        # Aufgabenkomplex 1
+
+        ## Einführung
+
+        1. Beschäftige dich mit dem Watchdog Timer des ATMega32. Schaue dafür in
+        das Datenblatt.
+
+        2. Was sind die Unterschiede bzw. Besonderheiten im Gegensatz zum
+        klassischen Timer? Welche Features hat der Watchdog Timer und welche
+        nicht?
+
+        3. Wie kann der Watchdog Timer genutzt werden? Welche Register werden
+        dazu benötigt?  Gibt es Besonderheiten beim Schreiben der Register?
+    studentConfig:
+      content: ''
+    teacherConfig:
+      content: >-
+        1. Datenblatt
+
+        2. eigener 128 kHz Oszillator, 10 Bit Timer, kann nicht direkt
+        ausgelesen werden
+
+        3. Interrupt, System Reset, WDTCSR, WDCE muss gesetzt werden um den
+        Prescaler und WDE setzen zu können, WDCE wird nach 4 Taktzyklen
+        zurückgesetzt
+    stationConfig:
+      content: ''
+    showInCustom: Raum 1
+    width: half
+    height: tall
+  - url: https://edrys-labs.github.io/module-streaming/index.html
+    config: ''
+    studentConfig: ''
+    teacherConfig: ''
+    stationConfig: ''
+    showInCustom: '*'
+    width: third
+    height: short
