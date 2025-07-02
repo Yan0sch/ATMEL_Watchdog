@@ -1,0 +1,119 @@
+id: LTtUnvfbTBSsQotO
+createdBy: QfDgkCisYKoZ
+dateCreated: 1750351126309
+name: Meine neue Klasse
+meta:
+  logo: ''
+  description: ''
+  selfAssign: true
+  defaultNumberOfRooms: '3'
+members:
+  teacher: []
+  student: []
+modules:
+  - url: https://edrys-labs.github.io/module-markdown-it/index.html
+    config:
+      content: '# Der Wachhund Timer'
+    studentConfig:
+      content: ''
+    teacherConfig:
+      content: ''
+    stationConfig:
+      content: ''
+    showInCustom: Lobby
+    width: full
+    height: tall
+  - url: https://edrys-labs.github.io/module-markdown-it/index.html
+    config:
+      content: >-
+        # Aufgabenkomplex 1
+
+        ## Einführung
+
+        1. Beschäftige dich mit dem Watchdog Timer des ATMega32. Schaue dafür in
+        das Datenblatt.
+
+        2. Was sind die Unterschiede bzw. Besonderheiten im Gegensatz zum
+        klassischen Timer? Welche Features hat der Watchdog Timer und welche
+        nicht?
+
+        3. Wie kann der Watchdog Timer genutzt werden? Welche Register werden
+        dazu benötigt?  Gibt es Besonderheiten beim Schreiben der Register?
+
+
+        ## Hello World! aber mit Wachhund
+
+        1. Die LED an `Pin 13` (`PB5`) soll zum blinken gebracht werden.
+
+        Schaue dir dafür den Code im Editor an.
+
+        2. Fülle die Fehlenden Stellen (`TODO`) aus.
+            - Wie muss der Watchdog Timer mittels WDTCSR konfiguriert damit ein Interrupt aber kein Reset ausgelöst wird?
+            - Stelle den Prescaler so ein, dass der WDT bei 500 ms überläuft.
+            - Wie wird die LED in der Interrupt Subroutine geschalten?
+        3. Es hat sich anscheinen ein kleiner Fehler eingeschlichen. Kannst du
+        ihn finden? (Hinweis: An welchem Pin war die LED doch gleich?)
+    studentConfig:
+      content: ''
+    teacherConfig:
+      content: ''
+    stationConfig:
+      content: ''
+    showInCustom: Raum 1
+    width: half
+    height: tall
+  - url: https://edrys-labs.github.io/module-editor/index.html
+    config:
+      runCommand: execute
+      language: cpp
+      theme: vs-light
+      editorText: |-
+        #include <avr/io.h>
+        #include <avr/interrupt.h>
+
+        #define LED PB5
+
+        ISR(WDT_vect){
+            // TODO
+        }
+
+        int main() {
+            // Pin 13 as output
+            DDRB |= 1 << LED;
+
+            // set the change enable bit
+            WDTCSR |= 1 << WDCE | 1 << WDE;
+
+            // setup the watchdog timer
+            WDTCSR = // TODO;
+
+            sei();
+            
+            while(1);
+        }
+      synchronize: false
+    studentConfig: ''
+    teacherConfig: ''
+    stationConfig: ''
+    showInCustom: Raum 1
+    width: full
+    height: tall
+  - url: https://edrys-labs.github.io/module-avr8js/index.html
+    config: 
+      modules: |
+        <wokwi-led color='red'   pin='13' label='13'></wokwi-led>
+      execute: execute
+    studentConfig: ''
+    teacherConfig: ''
+    stationConfig: ''
+    showInCustom: Raum 1
+    width: half
+    height: medium
+  - url: https://edrys-labs.github.io/module-streaming/index.html
+    config: ''
+    studentConfig: ''
+    teacherConfig: ''
+    stationConfig: ''
+    showInCustom: '*'
+    width: third
+    height: short
