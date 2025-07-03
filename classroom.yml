@@ -1,5 +1,5 @@
-id: LTtUnvfbTBSsQotO
-createdBy: QfDgkCisYKoZ
+id: XPiEegDGAizg8tZT
+createdBy: zNbWY1QkV7AP
 dateCreated: 1750351126309
 name: Meine neue Klasse
 meta:
@@ -51,8 +51,43 @@ modules:
             - Wie muss der Watchdog Timer mittels WDTCSR konfiguriert damit ein Interrupt aber kein Reset ausgelöst wird?
             - Stelle den Prescaler so ein, dass der WDT bei 500 ms überläuft.
             - Wie wird die LED in der Interrupt Subroutine geschalten?
-        3. Es hat sich anscheinen ein kleiner Fehler eingeschlichen. Kannst du
-        ihn finden? (Hinweis: An welchem Pin war die LED doch gleich?)
+
+        ### Initialer Code
+      
+        ```cpp
+
+        #include <avr/io.h>
+
+        #include <avr/interrupt.h>
+
+        #include <util/delay.h>
+
+        #include <Arduino.h>
+
+
+        #define LED PB5
+
+        ISR(WDT_vect){
+            // TODO
+        }
+
+        int main() {
+            Serial.begin(9600);
+            // Pin 13 as output
+            DDRB |= 1 << LED;
+
+            // set the change enable bit
+            WDTCSR |= 1 << WDCE | 1 << WDE;
+
+            // setup the watchdog timer
+            WDTCSR = 0 // TODO
+
+            sei();
+            
+            while(1);
+        }
+
+        ```
     studentConfig:
       content: ''
     teacherConfig:
@@ -62,22 +97,52 @@ modules:
     showInCustom: Raum 1
     width: half
     height: tall
-  - url: https://edrys-labs.github.io/module-editor/index.html
+  - url: https://edrys-labs.github.io/module-markdown-it/index.html
     config:
-      runCommand: execute
-      language: cpp
-      theme: vs-light
-      editorText: |-
+      content: >-
+        # Aufgabenkomplex 2
+
+        ## Anwendung des Watchdog Timers
+
+        1. Schaue dir die Reset Mechanismen im Datenblatt an. Wie kann man
+        auslesen, was den Reset ausgelöst hat?
+
+        2. Schaue dir das Programm im Editor an und starte es. Was passiert
+        dabei?
+
+        3. Starte nun auch das Programm für den zweiten Arduino. Dieser sendet
+        jetzt jede Sekunde einen externen Reset.
+
+        4. Verifiziere, dass der Reset wirklich extern ausgelöst wurde. Gib das
+        z.B. über die Serielle Schnittstelle aus.
+
+        5. Passe das Programm jetzt so an, dass sich der ATMEGA vorher mit dem
+        Watchdog Timer selbst resettet. Verifizere auch dass das wirklich
+        geklappt hat.
+
+        ### Initaler Code
+
+        ```cpp
+
         #include <avr/io.h>
+
         #include <avr/interrupt.h>
+
+        #include <util/delay.h>
+
+        #include <Arduino.h>
+
 
         #define LED PB5
 
         ISR(WDT_vect){
-            // TODO
+            // brauchen wir das?
         }
 
         int main() {
+            Serial.begin(9600);
+            // Serial.println("Irgendeinen den Status")
+
             // Pin 13 as output
             DDRB |= 1 << LED;
 
@@ -85,30 +150,36 @@ modules:
             WDTCSR |= 1 << WDCE | 1 << WDE;
 
             // setup the watchdog timer
-            WDTCSR = // TODO;
+            WDTCSR = 0; // TODO
 
-            sei();
+            // sei();
             
-            while(1);
+            for (int i = 0;;i++) {
+                PORTB ^= 1 << LED;
+                Serial.print("Iterationen: ");
+                Serial.println(i);
+                _delay_ms(500);
+            }
         }
-      synchronize: false
+
+        ```
+    studentConfig:
+      content: ''
+    teacherConfig:
+      content: ''
+    stationConfig:
+      content: ''
+    showInCustom: Raum 1
+    width: full
+    height: tall
+  - url: https://edrys-labs.github.io/module-monaco-editor/index.html
+    config: ''
     studentConfig: ''
     teacherConfig: ''
     stationConfig: ''
     showInCustom: Raum 1
     width: full
     height: tall
-  - url: https://edrys-labs.github.io/module-avr8js/index.html
-    config: 
-      modules: |
-        <wokwi-led color='red'   pin='13' label='13'></wokwi-led>
-      execute: execute
-    studentConfig: ''
-    teacherConfig: ''
-    stationConfig: ''
-    showInCustom: Raum 1
-    width: half
-    height: medium
   - url: https://edrys-labs.github.io/module-streaming/index.html
     config: ''
     studentConfig: ''
