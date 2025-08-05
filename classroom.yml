@@ -1,12 +1,12 @@
-id: XPiEegDGAizg8tZT
-createdBy: zNbWY1QkV7AP
+id: Nl9g683l6DXIWi82
+createdBy: QfDgkCisYKoZ
 dateCreated: 1750351126309
 name: Meine neue Klasse
 meta:
   logo: ''
   description: ''
   selfAssign: true
-  defaultNumberOfRooms: '3'
+  defaultNumberOfRooms: '1'
 members:
   teacher: []
   student: []
@@ -53,7 +53,7 @@ modules:
             - Wie wird die LED in der Interrupt Subroutine geschalten?
 
         ### Initialer Code
-      
+
         ```cpp
 
         #include <avr/io.h>
@@ -75,6 +75,10 @@ modules:
             Serial.begin(9600);
             // Pin 13 as output
             DDRB |= 1 << LED;
+            
+            // Deactivate external reset
+            DDRD |= 1 << PD2;
+            PORTD |= 0 << PD2;
 
             // set the change enable bit
             WDTCSR |= 1 << WDCE | 1 << WDE;
@@ -94,7 +98,7 @@ modules:
       content: ''
     stationConfig:
       content: ''
-    showInCustom: Raum 1
+    showInCustom: Raum 1,station
     width: half
     height: tall
   - url: https://edrys-labs.github.io/module-markdown-it/index.html
@@ -169,7 +173,7 @@ modules:
       content: ''
     stationConfig:
       content: ''
-    showInCustom: Raum 1
+    showInCustom: Raum 1,station
     width: full
     height: tall
   - url: https://edrys-labs.github.io/module-monaco-editor/index.html
@@ -177,14 +181,37 @@ modules:
     studentConfig: ''
     teacherConfig: ''
     stationConfig: ''
-    showInCustom: Raum 1
+    showInCustom: Raum 1,station
     width: full
     height: tall
+  - url: https://edrys-labs.github.io/module-pyxtermjs/index.html
+    config: ''
+    studentConfig: ''
+    teacherConfig: ''
+    stationConfig:
+      server: ''
+      execute: execute
+      script: |-
+        echo $CODE | base64 --decode > Hello.ino
+        arduino-cli sketch new Hello
+        olddir=$(pwd)
+        mv Hello.ino Hello
+        cd Hello
+        arduino-cli board attach -p /dev/ttyACM0 -b arduino:avr:uno
+        cd $olddir
+        arduino-cli compile Hello && arduino-cli upload -p /dev/ttyACM0 Hello
+        cat /dev/ttyACM0
+      enable:
+        student: false
+        teacher: false
+    showInCustom: station
+    width: third
+    height: medium
   - url: https://edrys-labs.github.io/module-streaming/index.html
     config: ''
     studentConfig: ''
     teacherConfig: ''
     stationConfig: ''
-    showInCustom: '*'
+    showInCustom: Raum 1,station
     width: third
     height: short
