@@ -6,19 +6,7 @@
 
 #define LED PB5
 
-ISR(WDT_vect){
-    // brauchen wir das?
-}
-
-uint8_t reset_flags __attribute__((section(".noinit")));
-__attribute__((naked)) __attribute__((section(".init3")))
-void save_mcusr(void) {
-    reset_flags = MCUSR;
-    MCUSR = 0;
-    wdt_disable();
-}
-
-int main() {
+void setup(){
     Serial.begin(9600);
     // Serial.println("Irgendeinen den Status")
 
@@ -29,23 +17,14 @@ int main() {
     DDRD |= 1 << PD2;
     PORTD |= 1 << PD2;
 
-    // set the change enable bit
-    //WDTCSR |= 1 << WDCE | 1 << WDE;
+    wdt_enable(WDTO_2S);
+}
 
-    // setup the watchdog timer
-    //WDTCSR = 0; // TODO
-
-    sei();
-    
+void loop(){
     for (int i = 0;;i++) {
         PORTB ^= 1 << LED;
         Serial.print("Iterationen: ");
-        Serial.print(i);
-        Serial.print(" ");
-        if (reset_flags & (1 << WDRF)) Serial.println("WatchDog Reset");
-        if (reset_flags & (1 << EXTRF)) Serial.println("external Reset");
-        if (reset_flags & (1 << PORF)) Serial.println("Power-on Reset");
-        Serial.println(reset_flags);
+        Serial.println(i);
         _delay_ms(500);
     }
 }

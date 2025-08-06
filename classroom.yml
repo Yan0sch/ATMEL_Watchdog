@@ -26,7 +26,7 @@ modules:
   - url: https://edrys-labs.github.io/module-markdown-it/index.html
     config:
       content: >-
-        # Aufgabenkomplex 1
+        # Aufgabe 1
 
         ## Einführung
 
@@ -62,8 +62,6 @@ modules:
 
         #include <util/delay.h>
 
-        #include <Arduino.h>
-
 
         #define LED PB5
 
@@ -72,7 +70,6 @@ modules:
         }
 
         int main() {
-            Serial.begin(9600);
             // Pin 13 as output
             DDRB |= 1 << LED;
             
@@ -104,7 +101,7 @@ modules:
   - url: https://edrys-labs.github.io/module-markdown-it/index.html
     config:
       content: >-
-        # Aufgabenkomplex 2
+        # Aufgabe 2
 
         ## Anwendung des Watchdog Timers
 
@@ -114,23 +111,28 @@ modules:
         2. Schaue dir das Programm im Editor an und starte es. Was passiert
         dabei?
 
-        3. Starte nun auch das Programm für den zweiten Arduino. Dieser sendet
-        jetzt jede Sekunde einen externen Reset.
+        3. Ändere `PORTD |= 0 << PD2;` zu `PORTD |= 1 << PD2;`. Das Aktiviert
+        den zweiten Arduino, sodass der alle 10s einen externen Reset auslöst.
+          - Woran kann man erkennen, dass der ATMEGA resettet wird?
+          - An welcher Stelle im ATMEGA könnte man auslesen, welcher Reset ausgelöst wurde?
+        4. Passe das Programm jetzt so an, dass sich der ATMEGA vorher mit dem
+        Watchdog Timer selbst resettet.
+          - mit den Registern aus dem Datenblatt
+          - Nutze die `avr/wdt.h` Bibliothek. Eine kurze Doku dafür findest z.B. unter [avr-libc: <avr/wdt.h>: WatchDog timer handling](https://www.nongnu.org/avr-libc/user-manual/group__avr__watchdog.html).
+        5. Wie kann man den WatchDog Timer resetten, bevor er den ATMEGA
+        resettet?
 
-        4. Verifiziere, dass der Reset wirklich extern ausgelöst wurde. Gib das
-        z.B. über die Serielle Schnittstelle aus.
-
-        5. Passe das Programm jetzt so an, dass sich der ATMEGA vorher mit dem
-        Watchdog Timer selbst resettet. Verifizere auch dass das wirklich
-        geklappt hat.
 
         ### Initaler Code
+
 
         ```cpp
 
         #include <avr/io.h>
 
         #include <avr/interrupt.h>
+
+        #include <avr/wdt.h>
 
         #include <util/delay.h>
 
@@ -139,25 +141,23 @@ modules:
 
         #define LED PB5
 
-        ISR(WDT_vect){
-            // brauchen wir das?
-        }
 
-        int main() {
+        void setup(){
             Serial.begin(9600);
-            // Serial.println("Irgendeinen den Status")
-
+            delay(200);
+            
             // Pin 13 as output
             DDRB |= 1 << LED;
 
-            // set the change enable bit
-            WDTCSR |= 1 << WDCE | 1 << WDE;
+            // activate external reset
+            DDRD |= 1 << PD2;
+            PORTD |= 1 << PD2;
 
-            // setup the watchdog timer
-            WDTCSR = 0; // TODO
+            // TODO
+        }
 
-            // sei();
-            
+
+        void loop(){
             for (int i = 0;;i++) {
                 PORTB ^= 1 << LED;
                 Serial.print("Iterationen: ");
@@ -174,7 +174,178 @@ modules:
     stationConfig:
       content: ''
     showInCustom: Raum 1,station
-    width: full
+    width: half
+    height: tall
+  - url: https://edrys-labs.github.io/module-markdown-it/index.html
+    config:
+      content: >-
+        # Aufgabe 3
+
+
+        1. Im dritten Aufgabenkomplex simuliert der zweite Arduino einen Sensor.
+        Die Daten werden über I²C übermittelt. Der Sensor ist allerdings
+        unzuverlässig und sendet manchmal keine Daten. In diesem Fall muss per
+        I²C einfach neu angefragt werden. Da der Arduino aber auf den Empfang
+        von Daten wartet kann das Programm an der Stelle nicht weiterlaufen.
+
+        2. Schaue dir das Programm unten an. Nutz den WatchDog Timer um hier
+        Abhilfe zu schaffen. **Beachte:** Der Sensorwert soll weiterhin nur jede
+        Sekunde abgefragt werden.
+
+
+        An der Stelle ist zu erwähnen, dass dieser Fehler nur simuliert wird.
+        Der Slave sendet mit einer Wahrscheinlichkeit von 70 % nichts, worauf
+        der Master eine 0 empfängt. Sobalt der Master eine 0 empfängt geht der
+        einfach in eine Endlosschleife.
+
+
+        ```cpp
+
+        #include <Wire.h>
+
+        #include <Arduino.h>
+
+        #include <avr/io.h>
+
+        #include <avr/interrupt.h>
+
+        #include <util/delay.h>
+
+        #include <avr/wdt.h>
+
+
+        uint8_t requestData();
+
+
+        void setup() {
+            Wire.begin(); // i2c as master
+            Serial.begin(9600);
+            delay(200);
+
+            // Deactivate external reset
+            DDRD |= 1 << PD2;
+            PORTD |= 0 << PD2;
+            
+            // TODO
+        }
+
+
+        void loop() {
+            Serial.print("Random Sensor Value ");
+            int data = requestData();
+            
+            // TODO
+            
+            Serial.println(data);
+
+            delay(1000);
+        }
+
+
+        uint8_t requestData(){
+            // request data
+            Wire.requestFrom(0x08, 1); // 1 Byte anfordern
+            
+            uint8_t response = 0;
+            if(Wire.available()){
+                response = Wire.read();
+            } 
+          
+            // Check for Error
+            while(!response);
+
+            return response;
+        }
+
+        ```
+    studentConfig:
+      content: ''
+    teacherConfig:
+      content: ''
+    stationConfig:
+      content: ''
+    showInCustom: Raum 1,station
+    width: half
+    height: tall
+  - url: https://edrys-labs.github.io/module-markdown-it/index.html
+    config:
+      content: >-
+        # Aufgabe 4
+
+        ## WatchDog als Wecker
+
+
+        Der Arduino soll alle 8s ein Statusupdate an den Seriellen Bus senden.
+        In der Zeit dazwischen soll der ATMEGA aber nicht unnötig Strom
+        verbrauchen und wird deshalb in den Sleep-Modus versetzt. Um den ATMEGA
+        aufzuwecken soll der WatchDog Timer verwendet werden. Da kommt die
+        `<avr/wdt.h>` auch an ihre Grenzen und der WatchDog Timer muss über die
+        Register konfiguriert werden. Es ist also Arbeit mit dem Datenblatt
+        angesagt.
+
+
+        **Hinweis:** Schaue dir nochmal Aufgabe 1 an.
+
+
+        ```cpp
+
+        #include <Arduino.h>
+
+        #include <avr/sleep.h>
+
+        #include <avr/wdt.h>
+
+        #include <avr/interrupt.h>
+
+
+        volatile bool watchdog_triggered = false;
+
+
+        ISR(WDT_vect) {
+          watchdog_triggered = true; // check that the WDT was triggered
+        }
+
+
+        void setup() {
+            Serial.begin(9600);
+            delay(200);
+
+            // deactivate external reset
+            DDRD |= 1 << PD2;
+            PORTD |= 0 << PD2;
+
+            // TODO
+
+            set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+            sleep_enable();
+        }
+
+
+        void loop() {
+            if (watchdog_triggered) {
+                watchdog_triggered = false;
+                Serial.println("WatchDog Triggered! Send very important data ...");
+                _delay_ms(100);
+            }
+            
+            // go to sleep
+            noInterrupts();
+            sleep_bod_disable();
+            interrupts();
+            sleep_cpu();      
+
+            // Program starts here after wake up
+        }
+
+        ```
+    studentConfig:
+      content: ''
+    teacherConfig:
+      content: ''
+    stationConfig:
+      content: ''
+    showInCustom: Raum 1,station
+    width: half
     height: tall
   - url: https://edrys-labs.github.io/module-monaco-editor/index.html
     config: ''
@@ -184,6 +355,14 @@ modules:
     showInCustom: Raum 1,station
     width: full
     height: tall
+  - url: https://edrys-labs.github.io/module-streaming/index.html
+    config: ''
+    studentConfig: ''
+    teacherConfig: ''
+    stationConfig: ''
+    showInCustom: Raum 1,station
+    width: third
+    height: short
   - url: https://edrys-labs.github.io/module-pyxtermjs/index.html
     config: ''
     studentConfig: ''
@@ -207,11 +386,3 @@ modules:
     showInCustom: station
     width: third
     height: medium
-  - url: https://edrys-labs.github.io/module-streaming/index.html
-    config: ''
-    studentConfig: ''
-    teacherConfig: ''
-    stationConfig: ''
-    showInCustom: Raum 1,station
-    width: third
-    height: short
