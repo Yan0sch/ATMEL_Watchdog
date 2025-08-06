@@ -6,14 +6,33 @@ meta:
   logo: ''
   description: ''
   selfAssign: true
-  defaultNumberOfRooms: '1'
+  defaultNumberOfRooms: '0'
 members:
   teacher: []
   student: []
 modules:
   - url: https://edrys-labs.github.io/module-markdown-it/index.html
     config:
-      content: '# Der Wachhund Timer'
+      content: >
+        # Der Wachhund Timer
+
+
+        Der Watchdog-Timer ist eine in den Mikrocontroller integrierte
+        Sicherheitsfunktion, die ursprünglich dafür gedacht ist, Systeme bei
+        Software-Fehlern oder Hängern automatisch zurückzusetzen. Doch er kann
+        mehr: In stromsparenden Anwendungen lässt sich der WDT auch als
+        regelmäßiger Wecktimer nutzen – ganz ohne externe Komponenten.
+
+
+        In dieser Übung lernst du:
+
+
+        - wie der WDT auf dem ATmega328P (z. B. Arduino Uno) konfiguriert wird,
+
+        - wie der WDT Hänger vermeiden kann
+
+        - wie du damit den Mikrocontroller aus dem tiefsten Sleep-Modus
+        („Power-down“) weckst
     studentConfig:
       content: ''
     teacherConfig:
@@ -95,7 +114,7 @@ modules:
       content: ''
     stationConfig:
       content: ''
-    showInCustom: Raum 1,station
+    showInCustom: station
     width: half
     height: tall
   - url: https://edrys-labs.github.io/module-markdown-it/index.html
@@ -173,7 +192,7 @@ modules:
       content: ''
     stationConfig:
       content: ''
-    showInCustom: Raum 1,station
+    showInCustom: station
     width: half
     height: tall
   - url: https://edrys-labs.github.io/module-markdown-it/index.html
@@ -264,7 +283,7 @@ modules:
       content: ''
     stationConfig:
       content: ''
-    showInCustom: Raum 1,station
+    showInCustom: station
     width: half
     height: tall
   - url: https://edrys-labs.github.io/module-markdown-it/index.html
@@ -344,7 +363,7 @@ modules:
       content: ''
     stationConfig:
       content: ''
-    showInCustom: Raum 1,station
+    showInCustom: station
     width: half
     height: tall
   - url: https://edrys-labs.github.io/module-monaco-editor/index.html
@@ -352,7 +371,7 @@ modules:
     studentConfig: ''
     teacherConfig: ''
     stationConfig: ''
-    showInCustom: Raum 1,station
+    showInCustom: station
     width: full
     height: tall
   - url: https://edrys-labs.github.io/module-streaming/index.html
@@ -360,7 +379,7 @@ modules:
     studentConfig: ''
     teacherConfig: ''
     stationConfig: ''
-    showInCustom: Raum 1,station
+    showInCustom: station
     width: third
     height: short
   - url: https://edrys-labs.github.io/module-pyxtermjs/index.html
