@@ -14,7 +14,7 @@ modules:
   - url: https://edrys-labs.github.io/module-markdown-it/index.html
     config:
       content: >
-        # Der Wachhund Timer
+        # Der WatchDog Timer
 
 
         Der Watchdog-Timer ist eine in den Mikrocontroller integrierte
